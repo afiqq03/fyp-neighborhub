@@ -103,9 +103,14 @@ class _TimetablePageState extends State<TimetablePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      appBar: CommonAppBar(
+      username: widget.username,
+      notificationCount: widget.notificationCount,
+      onSearchTap: widget.onSearchTap,
+      onNotificationTap: widget.onNotificationTap,
+    ),
+    body: Column(
         children: [
-          // Calendar Card
           Card(
             margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),
             elevation: 4,
@@ -243,7 +248,7 @@ class _TimetablePageState extends State<TimetablePage> {
                   ),
           ),
         ],
-      ),
+      )  
     );
   }
   
@@ -276,14 +281,14 @@ class _TimetablePageState extends State<TimetablePage> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
         side: BorderSide(
-          color: event.color.withOpacity(0.3),
+          color: event.color,
           width: 1,
         ),
       ),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         leading: CircleAvatar(
-          backgroundColor: event.color.withOpacity(0.2),
+          backgroundColor: event.color,
           child: Icon(
             _getCategoryIcon(event.category),
             color: event.color,
@@ -381,7 +386,7 @@ class _TimetablePageState extends State<TimetablePage> {
             Row(
               children: [
                 CircleAvatar(
-                  backgroundColor: event.color.withOpacity(0.2),
+                  backgroundColor: event.color,
                   child: Icon(
                     _getCategoryIcon(event.category),
                     color: event.color,

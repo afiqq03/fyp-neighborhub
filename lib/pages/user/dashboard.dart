@@ -37,43 +37,43 @@ class _MainNavigationState extends State<MainNavigation> {
     });
   }
 
-Future<void> _checkProfileCompleteness() async {
-  debugPrint('Checking profile completeness...');
-  try {
-    final userId = _auth.currentUser?.uid;
-    if (userId == null) {
-      debugPrint('User ID is null');
-      return;
-    }
-
-    final DocumentSnapshot userDoc =
-        await _firestore.collection('users').doc(userId).get();
-    
-    debugPrint('User document exists: ${userDoc.exists}');
-    
-    if (userDoc.exists) {
-      final userData = userDoc.data() as Map<String, dynamic>;
-      
-      // Print the relevant fields to debug
-      debugPrint('Phone: ${userData['phone']}');
-      debugPrint('Address: ${userData['address']}');
-      debugPrint('Username: ${userData['username']}');
-
-      if (userData['phone'] == null ||
-          userData['phone'].toString().isEmpty ||
-          userData['address'] == null ||
-          userData['address'].toString().isEmpty ||
-          userData['username'] == null ||
-          userData['username'].toString().isEmpty) {;
-        debugPrint('Profile is incomplete');
-      } else {
-        debugPrint('Profile is complete');
+  Future<void> _checkProfileCompleteness() async {
+    debugPrint('Checking profile completeness...');
+    try {
+      final userId = _auth.currentUser?.uid;
+      if (userId == null) {
+        debugPrint('User ID is null');
+        return;
       }
+
+      final DocumentSnapshot userDoc =
+          await _firestore.collection('users').doc(userId).get();
+
+      debugPrint('User document exists: ${userDoc.exists}');
+
+      if (userDoc.exists) {
+        final userData = userDoc.data() as Map<String, dynamic>;
+
+        // Print the relevant fields to debug
+        debugPrint('Phone: ${userData['phone']}');
+        debugPrint('Address: ${userData['address']}');
+        debugPrint('Username: ${userData['username']}');
+
+        if (userData['phone'] == null ||
+            userData['phone'].toString().isEmpty ||
+            userData['address'] == null ||
+            userData['address'].toString().isEmpty ||
+            userData['username'] == null ||
+            userData['username'].toString().isEmpty)
+          debugPrint('Profile is incomplete');
+        else {
+          debugPrint('Profile is complete');
+        }
+      }
+    } catch (e) {
+      debugPrint('Error checking profile completeness: $e');
     }
-  } catch (e) {
-    debugPrint('Error checking profile completeness: $e');
   }
-}
 
   // Fetch notification count
   Future<void> _fetchNotificationCount() async {
@@ -294,7 +294,12 @@ Future<void> _checkProfileCompleteness() async {
         activeMembers: _activeMembers,
       ),
       MapScreen(key: _mapScreenKey),
-      const TimetablePage(),
+      TimetablePage(
+        username: _username,
+        notificationCount: _notificationCount,
+        onNotificationTap: _handleNotifications,
+        onSearchTap: _handleSearch,
+      ),
       SettingsScreen(),
     ];
 
@@ -314,10 +319,18 @@ Future<void> _checkProfileCompleteness() async {
         onTap: _onNavigate,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.info_outline),label: 'Information',),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.info_outline),
+            label: 'Information',
+          ),
           BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Maps'),
-          BottomNavigationBarItem(icon: Icon(Icons.calendar_today), label: 'Calendar'),
-          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings',
+          BottomNavigationBarItem(
+            icon: Icon(Icons.calendar_today),
+            label: 'Calendar',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
           ),
         ],
       ),
