@@ -1,0 +1,40 @@
+name: rukuntetangga
+description: "A mobile application for managing neighborhood associations, providing features such as member management, event scheduling, and communication tools."
+publish_to: 'none' 
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.7.2
+
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  firebase_core: ^3.12.1
+  firebase_auth: ^5.5.1
+  cloud_firestore: ^5.6.5
+  provider: ^6.1.2
+  firebase_ui_auth: ^1.16.1
+  logging: ^1.2.0
+  intl: ^0.19.0
+  google_maps_flutter: ^2.5.3
+  geolocator: ^10.1.0
+  permission_handler: ^11.0.1
+  firebase_database: ^11.3.4
+  internet_connection_checker: ^3.0.1
+  url_launcher: ^6.1.12
+  flutter_staggered_animations: ^1.1.1
+  table_calendar: ^3.1.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^5.0.0
+
+flutter:
+
+  uses-material-design: true
+
