@@ -6,16 +6,12 @@ import 'package:rukuntetangga/widgets/common_app_bar.dart';
 
 class TimetablePage extends StatefulWidget {
   final String username;
-  final int notificationCount;
   final VoidCallback? onSearchTap;
-  final VoidCallback? onNotificationTap;
 
   const TimetablePage({
     super.key, 
     this.username = '',
-    this.notificationCount = 0,
     this.onSearchTap,
-    this.onNotificationTap,
   });
 
   @override
@@ -105,9 +101,7 @@ class _TimetablePageState extends State<TimetablePage> {
     return Scaffold(
       appBar: CommonAppBar(
       username: widget.username,
-      notificationCount: widget.notificationCount,
       onSearchTap: widget.onSearchTap,
-      onNotificationTap: widget.onNotificationTap,
     ),
     body: Column(
         children: [

@@ -14,7 +14,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _loginIdentifierController = TextEditingController(); // For username/email
+  final _loginIdentifierController = TextEditingController(); 
   final _passwordController = TextEditingController();
   final AuthService _authService = AuthService();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;

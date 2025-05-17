@@ -6,16 +6,12 @@ import 'package:rukuntetangga/widgets/constants.dart';
 import 'package:rukuntetangga/widgets/common_app_bar.dart';
 
 class SettingsScreen extends StatefulWidget {
-  final int notificationCount;
-  final VoidCallback? onNotificationTap;
   final VoidCallback? onSearchTap;
   final String username;
   final int activeMembers;
 
   const SettingsScreen({
     super.key,
-    this.notificationCount = 0,
-    this.onNotificationTap,
     this.onSearchTap,
     this.username = '',
     this.activeMembers = 0,
@@ -34,9 +30,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Scaffold(
       appBar: CommonAppBar(
         username: widget.username,
-        notificationCount: widget.notificationCount,
         onSearchTap: widget.onSearchTap,
-        onNotificationTap: widget.onNotificationTap,
       ),
       body: ListView(
         padding: const EdgeInsets.all(16.0),

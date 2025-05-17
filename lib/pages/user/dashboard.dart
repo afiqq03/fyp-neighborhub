@@ -19,7 +19,6 @@ class MainNavigation extends StatefulWidget {
 class _MainNavigationState extends State<MainNavigation> {
   int _selectedIndex = 0;
   int _activeMembers = 0;
-  int _notificationCount = 0;
   String _username = '';
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -28,7 +27,6 @@ class _MainNavigationState extends State<MainNavigation> {
   @override
   void initState() {
     super.initState();
-    _fetchNotificationCount();
     _fetchActiveMembers();
     _fetchUserInfo();
 
@@ -65,7 +63,7 @@ class _MainNavigationState extends State<MainNavigation> {
             userData['address'].toString().isEmpty ||
             userData['username'] == null ||
             userData['username'].toString().isEmpty)
-          debugPrint('Profile is incomplete');
+            debugPrint('Profile is incomplete');
         else {
           debugPrint('Profile is complete');
         }
@@ -74,31 +72,6 @@ class _MainNavigationState extends State<MainNavigation> {
       debugPrint('Error checking profile completeness: $e');
     }
   }
-
-  // Fetch notification count
-  Future<void> _fetchNotificationCount() async {
-    try {
-      // Get unread notifications for current user
-      final userId = _auth.currentUser?.uid;
-      if (userId == null) return;
-
-      final QuerySnapshot snapshot =
-          await _firestore
-              .collection('notifications')
-              .where('userId', isEqualTo: userId)
-              .where('read', isEqualTo: false)
-              .get();
-
-      if (mounted) {
-        setState(() {
-          _notificationCount = snapshot.docs.length;
-        });
-      }
-    } catch (e) {
-      debugPrint('Error fetching notifications: $e');
-    }
-  }
-
   // Fetch active community members
   Future<void> _fetchActiveMembers() async {
     try {
@@ -187,108 +160,17 @@ class _MainNavigationState extends State<MainNavigation> {
     );
   }
 
-  // Simple notifications view that doesn't crash
-  void _handleNotifications() {
-    showModalBottomSheet(
-      context: context,
-      builder:
-          (context) => SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'Notifications',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: kPrimaryColor,
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          // Simple placeholder for marking notifications as read
-                          setState(() {
-                            _notificationCount = 0;
-                          });
-                          Navigator.pop(context);
-                        },
-                        child: const Text('Mark all as read'),
-                      ),
-                    ],
-                  ),
-                  const Divider(),
-
-                  // Simplified notification list
-                  Expanded(
-                    child:
-                        _notificationCount > 0
-                            ? ListView.builder(
-                              itemCount: _notificationCount,
-                              itemBuilder: (context, index) {
-                                return ListTile(
-                                  leading: const CircleAvatar(
-                                    backgroundColor: kPrimaryColor,
-                                    child: Icon(
-                                      Icons.notifications,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  title: Text('Notification ${index + 1}'),
-                                  subtitle: const Text('Tap to view details'),
-                                  onTap: () {
-                                    // Handle notification tap
-                                  },
-                                );
-                              },
-                            )
-                            : Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.notifications_off_outlined,
-                                    size: 48,
-                                    color: Colors.grey[400],
-                                  ),
-                                  const SizedBox(height: 16),
-                                  Text(
-                                    'No notifications yet',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.grey[600],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     // Create screens dynamically to ensure onNavigate callback works properly
     final List<Widget> screens = [
       HomeScreen(
         onNavigate: _onNavigate,
-        notificationCount: _notificationCount,
-        onNotificationTap: _handleNotifications,
         onSearchTap: _handleSearch,
         username: _username,
         activeMembers: _activeMembers,
       ),
       InformationScreen(
-        notificationCount: _notificationCount,
-        onNotificationTap: _handleNotifications,
         onSearchTap: _handleSearch,
         username: _username,
         activeMembers: _activeMembers,
@@ -296,8 +178,6 @@ class _MainNavigationState extends State<MainNavigation> {
       MapScreen(key: _mapScreenKey),
       TimetablePage(
         username: _username,
-        notificationCount: _notificationCount,
-        onNotificationTap: _handleNotifications,
         onSearchTap: _handleSearch,
       ),
       SettingsScreen(),
@@ -307,9 +187,7 @@ class _MainNavigationState extends State<MainNavigation> {
       // Use only the CommonAppBar, removing the duplicate appBar
       appBar: CommonAppBar(
         username: _username,
-        notificationCount: _notificationCount,
         onSearchTap: _handleSearch,
-        onNotificationTap: _handleNotifications,
       ),
       body: IndexedStack(index: _selectedIndex, children: screens),
       bottomNavigationBar: BottomNavigationBar(

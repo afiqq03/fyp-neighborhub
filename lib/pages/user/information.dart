@@ -5,16 +5,12 @@ import 'package:rukuntetangga/widgets/constants.dart';
 import 'package:rukuntetangga/widgets/common_app_bar.dart'; // Add this import
 
 class InformationScreen extends StatefulWidget {
-  final int notificationCount;
-  final VoidCallback? onNotificationTap;
   final VoidCallback? onSearchTap;
   final String username;
   final int activeMembers;
 
   const InformationScreen({
     super.key,
-    this.notificationCount = 0,
-    this.onNotificationTap,
     this.onSearchTap,
     this.username = '',
     this.activeMembers = 0,
@@ -97,9 +93,7 @@ class _InformationScreenState extends State<InformationScreen> {
     return Scaffold(
       appBar: CommonAppBar(
         username: widget.username,
-        notificationCount: widget.notificationCount,
         onSearchTap: widget.onSearchTap,
-        onNotificationTap: widget.onNotificationTap,
       ),
       body: Column(
         children: [

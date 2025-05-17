@@ -7,8 +7,6 @@ import 'package:rukuntetangga/widgets/common_app_bar.dart';
 
 class HomeScreen extends StatefulWidget {
   final Function(int)? onNavigate;
-  final int notificationCount;
-  final VoidCallback? onNotificationTap;
   final VoidCallback? onSearchTap; 
   final bool isLoading;
   final String username; 
@@ -17,8 +15,6 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({
     super.key,
     this.onNavigate,
-    this.notificationCount = 0,
-    this.onNotificationTap,
     this.onSearchTap,
     this.isLoading = false,
     this.username = '',
@@ -67,9 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: CommonAppBar(
         username: widget.username,
-        notificationCount: widget.notificationCount,
         onSearchTap: widget.onSearchTap,
-        onNotificationTap: widget.onNotificationTap,
       ),
       body: AnimationLimiter(
         child: SingleChildScrollView(

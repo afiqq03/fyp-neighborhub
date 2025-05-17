@@ -8,7 +8,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rukuntetangga/widgets/constants.dart';
 import 'package:rukuntetangga/services/location_service.dart';
-import 'package:rukuntetangga/services/notification_service.dart';
 import 'package:rukuntetangga/services/user_service.dart';
 import 'package:rukuntetangga/pages/login.dart';
 
@@ -102,14 +101,10 @@ class _AuthenticationWrapperState extends State<AuthenticationWrapper> {
 class _ServiceLocator {
   // Lazy initialized services
   UserService? _userService;
-  NotificationService? _notificationService;
   LocationService? _locationService;
 
   // Getters that initialize services only when first accessed
   UserService get userService => _userService ??= UserService();
-
-  NotificationService get notificationService =>
-      _notificationService ??= NotificationService();
 
   LocationService get locationService => _locationService ??= LocationService();
 }
@@ -123,35 +118,14 @@ class MainNavigation extends StatefulWidget {
 
 class _MainNavigationState extends State<MainNavigation> {
   int _selectedIndex = 0;
-  int _notificationCount = 0;
-  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
     // Only fetch notifications, without UI details
-    _fetchNotificationCount();
   }
 
   // Fetch notification count using the service
-  Future<void> _fetchNotificationCount() async {
-    try {
-      setState(() => _isLoading = true);
-      final count = await serviceLocator.notificationService.getUnreadCount();
-      if (mounted) {
-        setState(() {
-          _notificationCount = count;
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      debugPrint('Error fetching notifications: $e');
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
-    }
-  }
-
   void _onNavigate(int index) {
     // Don't rebuild if selecting the same index
     if (_selectedIndex != index) {
@@ -161,20 +135,7 @@ class _MainNavigationState extends State<MainNavigation> {
     }
   }
 
-  // Handle notifications without UI implementation
-  void _handleNotifications() async {
-    try {
-      // Mark as read and update count
-      await serviceLocator.notificationService.markAllAsRead();
-      if (mounted) {
-        setState(() {
-          _notificationCount = 0;
-        });
-      }
-    } catch (e) {
-      debugPrint('Error handling notifications: $e');
-    }
-  }
+  // Handle notifications without UI implementatio
 
 @override
 Widget build(BuildContext context) {
@@ -182,23 +143,15 @@ Widget build(BuildContext context) {
   final List<Widget> screens = [
     HomeScreen(
       onNavigate: _onNavigate, 
-      notificationCount: _notificationCount,
-      onNotificationTap: _handleNotifications,
-      isLoading: _isLoading,
     ),
     InformationScreen(
-      notificationCount: _notificationCount,
-      onNotificationTap: _handleNotifications,
+
     ),
     const MapScreen(),
     TimetablePage(
       username: '', // Add your username property here
-      notificationCount: _notificationCount,
-      onNotificationTap: _handleNotifications,
     ),
     SettingsScreen(
-      notificationCount: _notificationCount,
-      onNotificationTap: _handleNotifications,
     ),
   ];
 
