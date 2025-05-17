@@ -4,6 +4,7 @@ import 'package:rukuntetangga/pages/register.dart';
 import 'package:rukuntetangga/pages/admin/dashboard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rukuntetangga/widgets/constants.dart';
+import 'package:rukuntetangga/pages/members/dashboard.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -31,21 +32,18 @@ class _LoginScreenState extends State<LoginScreen> {
     _passwordController.dispose();
     super.dispose();
   }
-
-  // Function to check if user has admin role in Firestore
-  Future<bool> _checkAdminRole(String userId) async {
-    
+  // Function to get user role from Firestore
+  Future<String?> _getUserRole(String userId) async {
     try {
       DocumentSnapshot userDoc = await _firestore.collection('users').doc(userId).get();
-      
       if (userDoc.exists) {
         Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
-        return userData['role'] == 'Member';
+        return userData['role'] as String?;
       }
-      return false;
+      return null;
     } catch (e) {
-      debugPrint('Error checking member role: $e');
-      return false;
+      debugPrint('Error getting user role: $e');
+      return null;
     }
   }
 
@@ -122,17 +120,21 @@ class _LoginScreenState extends State<LoginScreen> {
           final userId = userCredential.user?.uid;
 
           if (userId != null) {
-            // Check if user has admin role in Firestore
-            bool isAdmin = await _checkAdminRole(userId);
+            // Get user role from Firestore
+            String? role = await _getUserRole(userId);
             
             if (!mounted) return;
             
-            if (isAdmin) {
-              // User has admin role in Firestore
+            if (role?.toLowerCase() == 'member') {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => const MemberDashboard()),
+              );
+            } else if (role?.toLowerCase() == 'admin') {
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(builder: (context) => const AdminDashboard()),
               );
             } else {
+              // Default: go to home
               Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
             }
           }
