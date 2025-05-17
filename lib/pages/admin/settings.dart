@@ -66,7 +66,7 @@ class _AdminSettingsScreenState extends State<AdminSettingsScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          _authService.currentUser?.email ?? 'Admin',
+                          'Admin',
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
