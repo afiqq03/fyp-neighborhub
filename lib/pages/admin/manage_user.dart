@@ -48,7 +48,6 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
         
         // Set default values for missing fields
         userData['role'] = userData['role'] ?? 'User';
-        userData['status'] = userData['status'] ?? 'Active';
         userData['createdAt'] = userData['createdAt'] != null 
             ? _formatTimestamp(userData['createdAt'])
             : DateTime.now().toString().split(' ')[0];
@@ -220,27 +219,6 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
                                                       ),
                                                     ),
                                                   ),
-                                                  Container(
-                                                    padding: const EdgeInsets.symmetric(
-                                                      horizontal: 8, 
-                                                      vertical: 4
-                                                    ),
-                                                    decoration: BoxDecoration(
-                                                      color: user['status'] == 'Active'
-                                                          ? Colors.green.withAlpha(26)
-                                                          : Colors.red.withAlpha(26),
-                                                      borderRadius: BorderRadius.circular(8),
-                                                    ),
-                                                    child: Text(
-                                                      user['status'] ?? 'Active',
-                                                      style: TextStyle(
-                                                        fontSize: 12,
-                                                        color: user['status'] == 'Active'
-                                                            ? Colors.green
-                                                            : Colors.red,
-                                                      ),
-                                                    ),
-                                                  ),
                                                 ],
                                               ),
                                               if (user['username'] != null && user['username'].toString().isNotEmpty) ...[
@@ -373,22 +351,6 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
                                               visualDensity: VisualDensity.compact,
                                             ),
                                             IconButton(
-                                              icon: Icon(
-                                                user['status'] == 'Active' 
-                                                    ? Icons.block 
-                                                    : Icons.check_circle_outline,
-                                                size: 20,
-                                                color: user['status'] == 'Active'
-                                                    ? Colors.red
-                                                    : Colors.green,
-                                              ),
-                                              onPressed: () => _toggleUserStatus(user),
-                                              tooltip: user['status'] == 'Active'
-                                                  ? 'Deactivate user'
-                                                  : 'Activate user',
-                                              visualDensity: VisualDensity.compact,
-                                            ),
-                                            IconButton(
                                               icon: const Icon(
                                                 Icons.delete_forever,
                                                 size: 20,
@@ -503,59 +465,6 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
       }
     });
   }
-  
-  void _toggleUserStatus(Map<String, dynamic> user) async {
-    // Toggle the status between Active and Inactive
-    final newStatus = user['status'] == 'Active' ? 'Inactive' : 'Active';
-    final action = user['status'] == 'Active' ? 'deactivate' : 'activate';
-    
-    // Ask for confirmation
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Confirm ${action.capitalize()}'),
-        content: Text('Are you sure you want to $action this user?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            style: TextButton.styleFrom(
-              foregroundColor: user['status'] == 'Active' ? Colors.red : Colors.green,
-            ),
-            child: Text(action.capitalize()),
-          ),
-        ],
-      ),
-    );
-    
-    if (confirmed == true) {
-      try {
-        // Update status in Firestore
-        await _firestore.collection('users').doc(user['id']).update({
-          'status': newStatus,
-          'updatedAt': FieldValue.serverTimestamp(),
-        });
-        
-        // Show success message
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('User ${action}d successfully')),
-        );
-        
-        // Refresh user list
-        _loadUsers();
-      } catch (e) {
-        // Show error message
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
-        );
-      }
-    }
-  }
 }
 
 // User form dialog
@@ -583,7 +492,6 @@ class _UserFormDialogState extends State<UserFormDialog> {
   final _firestore = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
   String _role = 'User';
-  String _status = 'Active';
   bool _isLoading = false;
 
   @override
@@ -596,7 +504,6 @@ class _UserFormDialogState extends State<UserFormDialog> {
       _phoneController.text = widget.user!['phone'] ?? '';
       _addressController.text = widget.user!['address'] ?? '';
       _role = widget.user!['role'] ?? 'User';
-      _status = widget.user!['status'] ?? 'Active';
     }
   }
 
@@ -716,25 +623,6 @@ class _UserFormDialogState extends State<UserFormDialog> {
                   });
                 },
               ),
-              const SizedBox(height: 16),
-              DropdownButtonFormField<String>(
-                value: _status,
-                decoration: const InputDecoration(
-                  labelText: 'Status',
-                  border: OutlineInputBorder(),
-                ),
-                items: ['Active', 'Inactive'].map((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                onChanged: (newValue) {
-                  setState(() {
-                    _status = newValue!;
-                  });
-                },
-              ),
             ],
           ),
         ),
@@ -778,7 +666,6 @@ class _UserFormDialogState extends State<UserFormDialog> {
           'phone': _phoneController.text.trim(),
           'address': _addressController.text.trim(),
           'role': _role,
-          'status': _status,
           'updatedAt': FieldValue.serverTimestamp(),
         };
 
