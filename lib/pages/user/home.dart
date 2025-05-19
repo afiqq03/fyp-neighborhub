@@ -61,13 +61,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: GradientAppBar(
-        title: 'Welcome',
-        showGreeting: true,
-        username: widget.username,
-        onSearchTap: widget.onSearchTap,
-        centerTitle: false,
-      ),
       body: AnimationLimiter(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),

@@ -99,13 +99,6 @@ class _TimetablePageState extends State<TimetablePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: GradientAppBar(
-        title: 'Calendar',
-        showGreeting: true,
-        username: widget.username,
-        onSearchTap: widget.onSearchTap,
-        centerTitle: false,
-      ),
       body: Column(
         children: [
           Card(

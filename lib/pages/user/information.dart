@@ -90,13 +90,6 @@ class _InformationScreenState extends State<InformationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: GradientAppBar(
-        title: 'Information',
-        showGreeting: true,
-        username: widget.username,
-        onSearchTap: widget.onSearchTap,
-        centerTitle: false,
-      ),
       body: Column(
         children: [
           // Information header

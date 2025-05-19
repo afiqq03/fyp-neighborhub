@@ -28,13 +28,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: GradientAppBar(
-        title: 'Settings',
-        showGreeting: true,
-        username: widget.username,
-        onSearchTap: widget.onSearchTap,
-        centerTitle: false,
-      ),
       body: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [
