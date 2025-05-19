@@ -5,6 +5,7 @@ import 'package:rukuntetangga/pages/admin/manage_announcement.dart';
 import 'package:rukuntetangga/pages/admin/manage_user.dart';
 import 'package:rukuntetangga/pages/admin/settings.dart';
 import 'package:rukuntetangga/pages/admin/emergency.dart';
+import 'package:rukuntetangga/pages/admin/timetable.dart';
 
 class AdminDashboard extends StatefulWidget {
   const AdminDashboard({super.key});
@@ -35,6 +36,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
       const ManageAnnouncementsScreen(),
       const ManageUsersScreen(),
       const EmergencyScreen(),
+      const AdminTimetablePage(),
       const AdminSettingsScreen(),
     ];
   }
@@ -100,6 +102,10 @@ class _AdminDashboardState extends State<AdminDashboard> {
           BottomNavigationBarItem(
             icon: Icon(Icons.warning),
             label: 'Emergency',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.calendar_today),
+            label: 'Timetable',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),

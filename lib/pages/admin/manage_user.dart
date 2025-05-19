@@ -409,10 +409,11 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
     if (confirmed == true) {
       try {
         final String userId = user['id'];
-        
-        // Delete the user document from Firestore
+        setState(() {
+          _isLoading = true;
+        });
+        // Only delete from Firestore
         await _firestore.collection('users').doc(userId).delete();
-        
         // Show success message
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
@@ -421,7 +422,6 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
             backgroundColor: Colors.green,
           ),
         );
-        
         // Refresh user list
         _loadUsers();
       } catch (e) {
@@ -433,6 +433,12 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
             backgroundColor: Colors.red,
           ),
         );
+      } finally {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
       }
     }
   }

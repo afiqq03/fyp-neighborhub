@@ -7,11 +7,11 @@ class ResolveEmergencyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _firestore = FirebaseFirestore.instance;
+    final firestore = FirebaseFirestore.instance;
     return Scaffold(
       appBar: AppBar(title: const Text('Resolve Emergencies'), backgroundColor: kPrimaryColor),
       body: StreamBuilder<QuerySnapshot>(
-        stream: _firestore.collection('emergencies').where('resolved', isEqualTo: false).snapshots(),
+        stream: firestore.collection('emergencies').where('resolved', isEqualTo: false).snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
           final docs = snapshot.data!.docs;
@@ -25,7 +25,7 @@ class ResolveEmergencyScreen extends StatelessWidget {
                 subtitle: Text(data['createdAt']?.toDate().toString() ?? ''),
                 trailing: ElevatedButton(
                   onPressed: () async {
-                    await _firestore.collection('emergencies').doc(docs[i].id).update({'resolved': true});
+                    await firestore.collection('emergencies').doc(docs[i].id).update({'resolved': true});
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Emergency resolved!'), backgroundColor: kPrimaryColor),
                     );

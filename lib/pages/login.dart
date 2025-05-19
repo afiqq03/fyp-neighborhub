@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:rukuntetangga/services/auth_services.dart';
 import 'package:rukuntetangga/pages/register.dart';
-import 'package:rukuntetangga/pages/admin/dashboard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rukuntetangga/widgets/constants.dart';
 import 'package:rukuntetangga/pages/members/dashboard.dart';
+import 'package:rukuntetangga/pages/admin/dashboard.dart';
+import 'package:rukuntetangga/pages/user/dashboard.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -129,13 +130,10 @@ class _LoginScreenState extends State<LoginScreen> {
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(builder: (context) => const MemberDashboard()),
               );
-            } else if (role?.toLowerCase() == 'admin') {
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context) => const AdminDashboard()),
-              );
             } else {
-              // Default: go to home
-              Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => const UserDashboard()),
+              );
             }
           }
         } else {

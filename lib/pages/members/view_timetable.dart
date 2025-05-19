@@ -7,11 +7,11 @@ class ViewTimetableScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _firestore = FirebaseFirestore.instance;
+    final firestore = FirebaseFirestore.instance;
     return Scaffold(
       appBar: AppBar(title: const Text('View Timetable'), backgroundColor: kPrimaryColor),
       body: StreamBuilder<QuerySnapshot>(
-        stream: _firestore.collection('timetable').orderBy('date').snapshots(),
+        stream: firestore.collection('timetable').orderBy('date').snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
           final docs = snapshot.data!.docs;

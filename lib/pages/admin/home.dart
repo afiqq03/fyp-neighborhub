@@ -373,6 +373,12 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                         label: 'View Emergency Alerts',
                         onTap: () => widget.onNavigate?.call(3),
                       ),
+                      const Divider(),
+                      _buildActionButton(
+                        icon: Icons.calendar_today,
+                        label: 'Manage Timetable',
+                        onTap: () => widget.onNavigate?.call(4),
+                      ),
                     ],
                   ),
                 ),

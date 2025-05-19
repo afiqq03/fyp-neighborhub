@@ -9,16 +9,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rukuntetangga/widgets/constants.dart';
 import 'package:rukuntetangga/widgets/common_app_bar.dart';
 
-class MainNavigation extends StatefulWidget {
-  const MainNavigation({super.key});
+class UserDashboard extends StatefulWidget {
+  const UserDashboard({super.key});
 
   @override
-  State<MainNavigation> createState() => _MainNavigationState();
+  State<UserDashboard> createState() => _MainNavigationState();
 }
 
-class _MainNavigationState extends State<MainNavigation> {
+class _MainNavigationState extends State<UserDashboard> {
   int _selectedIndex = 0;
-  int _activeMembers = 0;
   String _username = '';
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -27,7 +26,6 @@ class _MainNavigationState extends State<MainNavigation> {
   @override
   void initState() {
     super.initState();
-    _fetchActiveMembers();
     _fetchUserInfo();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -62,9 +60,9 @@ class _MainNavigationState extends State<MainNavigation> {
             userData['address'] == null ||
             userData['address'].toString().isEmpty ||
             userData['username'] == null ||
-            userData['username'].toString().isEmpty)
-            debugPrint('Profile is incomplete');
-        else {
+            userData['username'].toString().isEmpty) {
+          debugPrint('Profile is incomplete');
+        } else {
           debugPrint('Profile is complete');
         }
       }
@@ -72,25 +70,7 @@ class _MainNavigationState extends State<MainNavigation> {
       debugPrint('Error checking profile completeness: $e');
     }
   }
-  // Fetch active community members
-  Future<void> _fetchActiveMembers() async {
-    try {
-      final QuerySnapshot snapshot =
-          await _firestore
-              .collection('users')
-              .where('status', isEqualTo: 'Active')
-              .get();
-
-      if (mounted) {
-        setState(() {
-          _activeMembers = snapshot.docs.length;
-        });
-      }
-    } catch (e) {
-      debugPrint('Error fetching active members: $e');
-    }
-  }
-
+  
   // Fetch user info
   Future<void> _fetchUserInfo() async {
     try {
@@ -168,12 +148,10 @@ class _MainNavigationState extends State<MainNavigation> {
         onNavigate: _onNavigate,
         onSearchTap: _handleSearch,
         username: _username,
-        activeMembers: _activeMembers,
       ),
       InformationScreen(
         onSearchTap: _handleSearch,
         username: _username,
-        activeMembers: _activeMembers,
       ),
       MapScreen(key: _mapScreenKey),
       TimetablePage(
