@@ -3,7 +3,7 @@ import 'package:rukuntetangga/services/auth_services.dart';
 import 'package:rukuntetangga/pages/login.dart';
 import 'package:rukuntetangga/pages/user/editprofile.dart';
 import 'package:rukuntetangga/widgets/constants.dart';
-import 'package:rukuntetangga/widgets/common_app_bar.dart';
+import 'package:rukuntetangga/widgets/gradient_app_bar.dart';
 
 class SettingsScreen extends StatefulWidget {
   final VoidCallback? onSearchTap;
@@ -28,9 +28,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CommonAppBar(
+      appBar: GradientAppBar(
+        title: 'Settings',
+        showGreeting: true,
         username: widget.username,
         onSearchTap: widget.onSearchTap,
+        centerTitle: false,
       ),
       body: ListView(
         padding: const EdgeInsets.all(16.0),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:rukuntetangga/widgets/constants.dart';
-import 'package:rukuntetangga/widgets/common_app_bar.dart'; // Add this import
+import 'package:rukuntetangga/widgets/gradient_app_bar.dart';
 
 class InformationScreen extends StatefulWidget {
   final VoidCallback? onSearchTap;
@@ -89,11 +89,13 @@ class _InformationScreenState extends State<InformationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Wrap the existing Column with a Scaffold and add CommonAppBar
     return Scaffold(
-      appBar: CommonAppBar(
+      appBar: GradientAppBar(
+        title: 'Information',
+        showGreeting: true,
         username: widget.username,
         onSearchTap: widget.onSearchTap,
+        centerTitle: false,
       ),
       body: Column(
         children: [

@@ -2,7 +2,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter/material.dart';
 import 'package:rukuntetangga/widgets/constants.dart';
 import 'package:intl/intl.dart';
-import 'package:rukuntetangga/widgets/common_app_bar.dart';
+import 'package:rukuntetangga/widgets/gradient_app_bar.dart';
 
 class TimetablePage extends StatefulWidget {
   final String username;
@@ -99,11 +99,14 @@ class _TimetablePageState extends State<TimetablePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CommonAppBar(
-      username: widget.username,
-      onSearchTap: widget.onSearchTap,
-    ),
-    body: Column(
+      appBar: GradientAppBar(
+        title: 'Calendar',
+        showGreeting: true,
+        username: widget.username,
+        onSearchTap: widget.onSearchTap,
+        centerTitle: false,
+      ),
+      body: Column(
         children: [
           Card(
             margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),

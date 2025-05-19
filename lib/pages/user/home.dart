@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:rukuntetangga/widgets/constants.dart';
-import 'package:rukuntetangga/widgets/common_app_bar.dart';
+import 'package:rukuntetangga/widgets/gradient_app_bar.dart';
 
 class HomeScreen extends StatefulWidget {
   final Function(int)? onNavigate;
@@ -61,9 +61,12 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CommonAppBar(
+      appBar: GradientAppBar(
+        title: 'Welcome',
+        showGreeting: true,
         username: widget.username,
         onSearchTap: widget.onSearchTap,
+        centerTitle: false,
       ),
       body: AnimationLimiter(
         child: SingleChildScrollView(

@@ -7,7 +7,7 @@ import 'package:rukuntetangga/pages/user/timetable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rukuntetangga/widgets/constants.dart';
-import 'package:rukuntetangga/widgets/common_app_bar.dart';
+import 'package:rukuntetangga/widgets/gradient_app_bar.dart';
 
 class UserDashboard extends StatefulWidget {
   const UserDashboard({super.key});
@@ -134,8 +134,13 @@ class _MainNavigationState extends State<UserDashboard> {
     ];
 
     return Scaffold(
-      // Use only the CommonAppBar, removing the duplicate appBar
-      appBar: CommonAppBar(username: _username, onSearchTap: _handleSearch),
+      appBar: GradientAppBar(
+        title: 'Welcome',
+        showGreeting: true,
+        username: _username,
+        onSearchTap: _handleSearch,
+        centerTitle: false,
+      ),
       body: IndexedStack(index: _selectedIndex, children: screens),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
