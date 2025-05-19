@@ -22,19 +22,16 @@ class _MainNavigationState extends State<UserDashboard> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GlobalKey<MapScreenState> _mapScreenKey = GlobalKey<MapScreenState>();
+  bool _isProfileComplete = false;
 
   @override
   void initState() {
     super.initState();
-    _fetchUserInfo();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _checkProfileCompleteness();
-    });
+    _fetchUserInfoAndCheckProfile();
   }
 
-  Future<void> _checkProfileCompleteness() async {
-    debugPrint('Checking profile completeness...');
+  // Combined method to fetch user info and check profile completeness
+  Future<void> _fetchUserInfoAndCheckProfile() async {
     try {
       final userId = _auth.currentUser?.uid;
       if (userId == null) {
@@ -42,49 +39,30 @@ class _MainNavigationState extends State<UserDashboard> {
         return;
       }
 
-      final DocumentSnapshot userDoc =
-          await _firestore.collection('users').doc(userId).get();
-
-      debugPrint('User document exists: ${userDoc.exists}');
-
-      if (userDoc.exists) {
-        final userData = userDoc.data() as Map<String, dynamic>;
-
-        // Print the relevant fields to debug
-        debugPrint('Phone: ${userData['phone']}');
-        debugPrint('Address: ${userData['address']}');
-        debugPrint('Username: ${userData['username']}');
-
-        if (userData['phone'] == null ||
-            userData['phone'].toString().isEmpty ||
-            userData['address'] == null ||
-            userData['address'].toString().isEmpty ||
-            userData['username'] == null ||
-            userData['username'].toString().isEmpty) {
-          debugPrint('Profile is incomplete');
-        } else {
-          debugPrint('Profile is complete');
-        }
-      }
-    } catch (e) {
-      debugPrint('Error checking profile completeness: $e');
-    }
-  }
-  
-  // Fetch user info
-  Future<void> _fetchUserInfo() async {
-    try {
-      final userId = _auth.currentUser?.uid;
-      if (userId == null) return;
-
-      final DocumentSnapshot userDoc =
-          await _firestore.collection('users').doc(userId).get();
+      // Try to get from cache first, then from server if needed
+      final userDoc = await _firestore
+          .collection('users')
+          .doc(userId)
+          .get(const GetOptions(source: Source.cache))
+          .catchError((_) => _firestore.collection('users').doc(userId).get());
 
       if (userDoc.exists && mounted) {
+        final userData = userDoc.data() as Map<String, dynamic>;
+        
+        // Update username
         setState(() {
-          _username =
-              (userDoc.data() as Map<String, dynamic>)['fullName'] ?? 'User';
+          _username = userData['fullName'] ?? 'User';
         });
+
+        // Check profile completeness
+        _isProfileComplete = userData['phone'] != null &&
+            userData['phone'].toString().isNotEmpty &&
+            userData['address'] != null &&
+            userData['address'].toString().isNotEmpty &&
+            userData['username'] != null &&
+            userData['username'].toString().isNotEmpty;
+
+        debugPrint('Profile is ${_isProfileComplete ? 'complete' : 'incomplete'}');
       }
     } catch (e) {
       debugPrint('Error fetching user info: $e');
@@ -149,24 +127,15 @@ class _MainNavigationState extends State<UserDashboard> {
         onSearchTap: _handleSearch,
         username: _username,
       ),
-      InformationScreen(
-        onSearchTap: _handleSearch,
-        username: _username,
-      ),
+      InformationScreen(onSearchTap: _handleSearch, username: _username),
       MapScreen(key: _mapScreenKey),
-      TimetablePage(
-        username: _username,
-        onSearchTap: _handleSearch,
-      ),
+      TimetablePage(username: _username, onSearchTap: _handleSearch),
       SettingsScreen(),
     ];
 
     return Scaffold(
       // Use only the CommonAppBar, removing the duplicate appBar
-      appBar: CommonAppBar(
-        username: _username,
-        onSearchTap: _handleSearch,
-      ),
+      appBar: CommonAppBar(username: _username, onSearchTap: _handleSearch),
       body: IndexedStack(index: _selectedIndex, children: screens),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
