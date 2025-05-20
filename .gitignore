@@ -89,3 +89,4 @@ local.properties
 *.bak
 android/app/src/main/AndroidManifest.xml
 lib/pages/user/maps.dart
+./firebase.json
